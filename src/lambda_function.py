@@ -148,10 +148,23 @@ def get_lesson_texts(lectionary, month, day):
     texts = []
     for ref in lectionary[month][day]:
         full_ref = re.sub('†.*$', '', ref)
-        if (is_apocrypha(full_ref)):
-            texts.append(get_apocrypha_text(full_ref))
-        else:
-            texts.append(get_esv_text(full_ref))
+
+        # The ESV API doesn't handle requests for texts that span multiple chapters well.
+        # e.g. Acts 6:8—end; Acts 7:1-6; Acts 7:44-60
+        # Split them up (by ;) into multiple requests and merge them together.
+
+        full_text = ""
+        full_ref_pieces = full_ref.split(';')
+        for full_ref_piece in full_ref_pieces:
+            full_ref_piece = full_ref_piece.strip()
+
+            if (is_apocrypha(full_ref_piece)):
+                full_text += get_apocrypha_text(full_ref_piece)
+            else:
+                full_text += get_esv_text(full_ref_piece)
+                full_text += " "
+        texts.append(full_text)
+
     return texts
 
 # Get texts for the psalms lectionary entry on the provided month and day
@@ -229,7 +242,7 @@ def lambda_handler(event, context):
 
     # Restrict CORS
     headers = {}
-    if event['requestContext']['stage'] == 'test':
+    if 'requestContext' in event and event['requestContext']['stage'] == 'test':
       headers['Access-Control-Allow-Origin'] = 'http://localhost:3000'
     else:
       headers['Access-Control-Allow-Origin'] = 'https://davidbettis.com'
