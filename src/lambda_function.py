@@ -222,14 +222,24 @@ def lambda_handler(event, context):
     if office == 'morning':
         with open(JSON_DIR + 'morning-lectionary.json') as f:
             morning_lectionary = json.load(f)
-            body['morning'] = get_lesson_texts(morning_lectionary, month, day)
+            texts = get_lesson_texts(morning_lectionary, month, day)
+            texts_verses = []
+            for text in texts:
+                texts_verses.append(splitByVerse(text))
+            body['morning'] = texts
+            body['morning-with-verses'] = texts_verses
             body['morning-references'] = morning_lectionary[month][day]
         with open(JSON_DIR + 'psalms-morning-lectionary.json') as f:
             body['morning-psalms'] = get_psalm_texts(json.load(f), month, day)
     elif office == 'evening':
         with open(JSON_DIR + 'evening-lectionary.json') as f:
             evening_lectionary = json.load(f)
-            body['evening'] = get_lesson_texts(evening_lectionary, month, day)
+            texts = get_lesson_texts(evening_lectionary, month, day)
+            texts_verses = []
+            for text in texts:
+                texts_verses.append(splitByVerse(text))
+            body['evening'] = texts
+            body['evening-with-verses'] = texts_verses
             body['evening-references'] = evening_lectionary[month][day]
         with open(JSON_DIR + 'psalms-evening-lectionary.json') as f:
             body['evening-psalms'] = get_psalm_texts(json.load(f), month, day)

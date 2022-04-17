@@ -16,6 +16,7 @@ class TestDailyOffice(unittest.TestCase):
             'queryStringParameters': {'date': '2019-03-01', 'office': 'morning'}
             }, None)
 
+
         self.assertEqual(output['statusCode'], 200)
         self.assertEqual(output['headers']['Access-Control-Allow-Origin'], 'http://localhost:3000')
         self.assertEqual(output['isBase64Encoded'], False)
@@ -30,6 +31,14 @@ class TestDailyOffice(unittest.TestCase):
         nt = parsed['morning'][1]
         self.assertEqual(ot.startswith('[1] Then the LORD said to Moses'), True)
         self.assertEqual(nt.startswith('[1] That same day Jesus went out of the house'), True)
+
+        self.assertEqual(len(parsed['morning-with-verses']), 2)
+        ot_verses = parsed['morning-with-verses'][0]
+        nt_verses = parsed['morning-with-verses'][1]
+        self.assertEqual(ot_verses[0]['verse'], '1')
+        self.assertEqual(ot_verses[0]['text'][0].startswith('Then the LORD said to Moses'), True)
+        self.assertEqual(nt_verses[0]['verse'], '1')
+        self.assertEqual(nt_verses[0]['text'][0].startswith('That same day Jesus went out of the house'), True)
 
         # Check the first verse of the psalm
         self.assertEqual(len(parsed['morning-psalms']), 1)
@@ -58,9 +67,16 @@ class TestDailyOffice(unittest.TestCase):
         self.assertEqual(len(parsed['evening']), 2)
         ot = parsed['evening'][0]
         nt = parsed['evening'][1]
-
         self.assertEqual(ot.startswith('[1] My son, do not forget my teaching'), True)
         self.assertEqual(nt.startswith('[1] I commend to you our sister Phoebe'), True)
+
+        self.assertEqual(len(parsed['evening-with-verses']), 2)
+        ot_verses = parsed['evening-with-verses'][0]
+        nt_verses = parsed['evening-with-verses'][1]
+        self.assertEqual(ot_verses[0]['verse'], '1')
+        self.assertEqual(ot_verses[0]['text'][0].startswith('My son, do not forget my teaching'), True)
+        self.assertEqual(nt_verses[0]['verse'], '1')
+        self.assertEqual(nt_verses[0]['text'][0].startswith('I commend to you our sister Phoebe'), True)
 
         # Check the first verse of the psalm
         self.assertEqual(len(parsed['evening-psalms']), 1)
