@@ -1,3 +1,8 @@
+# NOTICE
+
+In light of Anglican House Publishing sponsoring https://www.dailyoffice2019.com/, effective May 28, 2022, this project is no longer maintained.
+I commend the new project to you! This contents are here for posterity only.
+
 # About
 
 This is a web service that supports the Daily Office (https://github.com/davidbettis/daily-office). The Daily Office is Christian devotional that guides the reader through various readings over the course of a year; this web sevice returns this text.
